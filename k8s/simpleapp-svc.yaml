@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpleapp
+  namespace: prova
+  labels:
+    app: simpleapp
+spec:
+  type: ClusterIP
+  selector:
+    app: simpleapp
+  ports:
+    - protocol: TCP
+      name: http
+      port: 5000

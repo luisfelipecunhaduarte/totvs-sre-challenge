@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-app-deployment
+  namespace: prova
+  labels:
+    app: simpleapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simpleapp
+  template:
+    metadata:
+      labels:
+        app: simpleapp
+    spec:
+      containers:
+        - name: simpleapp
+          image: luisfelipeduarte/sre-totvs-challenge:latest
+          ports:
+            - name: http
+              containerPort: 5000
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 8
+            successThreshold: 1
+            failureThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 180
+            periodSeconds: 15
+            timeoutSeconds: 5
+          envFrom:
+            - configMapRef:
+                name: simple-app-cm
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
